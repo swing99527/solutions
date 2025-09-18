@@ -1,21 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
 import { Badge } from "./components/ui/badge";
-import { ArrowRight, Palette, TrendingUp, Heart, Settings } from "lucide-react";
+import { ArrowRight, Palette, TrendingUp, Heart, Settings, Globe } from "lucide-react";
 import logoImage from "figma:asset/fe3c23c5ed29e662f22e6744f2cf4cdbae6fa88d.png";
+import faviconImage from "figma:asset/85b9ec66344b7da6c19fcbe63a53a5d01a0d16b9.png";
 import SmartScheduling from "./components/SmartScheduling";
+import LingExpress from "./components/LingExpress";
 
 // 配置对象 - 使用默认配置，在实际部署时可以通过环境变量或配置文件设置
 const solutionConfig = {
   WEAVEMIND_URL: 'https://weavemind.cyber-router.com', // 织慧™智能纺织设计平台
   BAOINFO_URL: 'https://tn.cyber-router.com',          // 标讯领航员招投标平台
   PSYCHAI_URL: 'https://slidepresentation.cyber-router.com/', // AI心理健康智能副驾
+  LINGEXPRESS_URL: '/lingexpress',           // LingExpress跨境网络解决方案
   CONTACT_URL: 'mailto:sales@lingbrain.com', // 联系我们邮箱
   DEMO_URL: 'mailto:sales@lingbrain.com'     // 预约演示邮箱
 };
 
 const solutions = [
+  {
+    id: 'lingexpress',
+    title: 'LingExpress',
+    subtitle: 'Cross-border Network · 图灵智脑',
+    description: '跨境网络与业务增长解决方案，联合中国电信官方授权专线，为跨境电商提供稳定合规的网络基础',
+    icon: Globe,
+    color: 'bg-cyan-50 text-cyan-600',
+    category: '跨境网络',
+    link: solutionConfig.LINGEXPRESS_URL
+  },
   {
     id: 'weavemind',
     title: '织慧™',
@@ -61,10 +74,37 @@ const solutions = [
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
 
+  // 设置网站标题和favicon
+  useEffect(() => {
+    // 设置页面标题
+    document.title = '中科图灵解决方案';
+    
+    // 设置favicon
+    const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.href = faviconImage;
+    if (!document.querySelector('link[rel="icon"]')) {
+      document.head.appendChild(favicon);
+    }
+    
+    // 设置apple-touch-icon
+    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]') || document.createElement('link');
+    appleTouchIcon.rel = 'apple-touch-icon';
+    appleTouchIcon.href = faviconImage;
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+      document.head.appendChild(appleTouchIcon);
+    }
+  }, []);
+
   const handleSolutionClick = (link: string) => {
     if (link === '/smart-scheduling') {
       // 内部路由，切换到智能排程页面
       setCurrentPage('smart-scheduling');
+      return;
+    }
+    if (link === '/lingexpress') {
+      // 内部路由，切换到LingExpress页面
+      setCurrentPage('lingexpress');
       return;
     }
     window.open(link, '_blank');
@@ -72,6 +112,10 @@ export default function App() {
 
   if (currentPage === 'smart-scheduling') {
     return <SmartScheduling onBack={() => setCurrentPage('home')} />;
+  }
+
+  if (currentPage === 'lingexpress') {
+    return <LingExpress onBack={() => setCurrentPage('home')} />;
   }
 
   return (
@@ -111,56 +155,121 @@ export default function App() {
             中科图灵AI解决方案矩阵
           </h1>
           <p className="max-w-3xl mx-auto text-gray-600 mb-8">
-            图灵智脑系列融合前沿人工智能技术，为纺织设计、招投标决策、心理健康诊断、智能制造等垂直领域提供专业的AI驱动解决方案，
+            图灵智脑系列融合前沿人工智能技术，为跨境网络、纺织设计、招投标决策、心理健康诊断、智能制造等垂直领域提供专业的AI驱动解决方案，
             助力企业数字化转型与智能化升级。
           </p>
         </div>
 
-        {/* Solutions Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8 mb-12">
-          {solutions.map((solution) => {
-            const IconComponent = solution.icon;
-            return (
-              <Card key={solution.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-1 h-full">
-                <div className="p-8 h-full flex flex-col">
-                  <div className="flex items-start justify-between mb-6">
-                    <div className={`p-3 rounded-xl ${solution.color} group-hover:scale-110 transition-transform duration-300`}>
-                      <IconComponent className="w-6 h-6" />
+        {/* Solutions Grid - 2+3 Layout */}
+        <div className="space-y-8 mb-12">
+          {/* 第一排：重点解决方案 */}
+          <div>
+            <div className="text-center mb-8">
+              <Badge variant="secondary" className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-700 mb-4">
+                核心AI解决方案
+              </Badge>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {solutions.slice(0, 2).map((solution) => {
+                const IconComponent = solution.icon;
+                return (
+                  <Card key={solution.id} className="group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg hover:-translate-y-2 h-full">
+                    <div className="p-10 h-full flex flex-col">
+                      <div className="flex items-start justify-between mb-8">
+                        <div className={`p-4 rounded-2xl ${solution.color} group-hover:scale-110 transition-transform duration-300`}>
+                          <IconComponent className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Badge variant="outline" className="text-sm">
+                            {solution.category}
+                          </Badge>
+                          <Badge variant="secondary" className="text-sm bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700">
+                            图灵智脑
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h3 className="mb-2 group-hover:text-blue-600 transition-colors text-xl">
+                          {solution.title}
+                        </h3>
+                        <p className="text-gray-500 mb-4">
+                          {solution.subtitle}
+                        </p>
+                      </div>
+                      
+                      <p className="text-gray-600 mb-8 leading-relaxed flex-1 text-lg">
+                        {solution.description}
+                      </p>
+                      
+                      <Button 
+                        onClick={() => handleSolutionClick(solution.link)}
+                        size="lg"
+                        className="w-full group/btn bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 mt-auto"
+                      >
+                        了解详情
+                        <ArrowRight className="ml-2 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <Badge variant="outline" className="text-xs">
-                        {solution.category}
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700">
-                        图灵智脑
-                      </Badge>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 第二排：专业解决方案 */}
+          <div>
+            <div className="text-center mb-8">
+              <Badge variant="secondary" className="px-4 py-2 bg-gradient-to-r from-purple-100 to-orange-100 text-purple-700 mb-4">
+                专业垂直解决方案
+              </Badge>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {solutions.slice(2).map((solution) => {
+                const IconComponent = solution.icon;
+                return (
+                  <Card key={solution.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-1 h-full">
+                    <div className="p-8 h-full flex flex-col">
+                      <div className="flex items-start justify-between mb-6">
+                        <div className={`p-3 rounded-xl ${solution.color} group-hover:scale-110 transition-transform duration-300`}>
+                          <IconComponent className="w-6 h-6" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Badge variant="outline" className="text-xs">
+                            {solution.category}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700">
+                            图灵智脑
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <h3 className="mb-1 group-hover:text-blue-600 transition-colors">
+                          {solution.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-3">
+                          {solution.subtitle}
+                        </p>
+                      </div>
+                      
+                      <p className="text-gray-600 mb-6 leading-relaxed flex-1">
+                        {solution.description}
+                      </p>
+                      
+                      <Button 
+                        onClick={() => handleSolutionClick(solution.link)}
+                        className="w-full group/btn bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 mt-auto"
+                      >
+                        了解详情
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
                     </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <h3 className="mb-1 group-hover:text-blue-600 transition-colors">
-                      {solution.title}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-3">
-                      {solution.subtitle}
-                    </p>
-                  </div>
-                  
-                  <p className="text-gray-600 mb-6 leading-relaxed flex-1">
-                    {solution.description}
-                  </p>
-                  
-                  <Button 
-                    onClick={() => handleSolutionClick(solution.link)}
-                    className="w-full group/btn bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 mt-auto"
-                  >
-                    了解详情
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* Series Overview */}
@@ -169,10 +278,15 @@ export default function App() {
             <Badge className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white mb-4">
               LINGBRAIN 图灵智脑系列
             </Badge>
-            <h2 className="mb-4">四大垂直AI解决方案</h2>
+            <h2 className="mb-4">五大垂直AI解决方案</h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
+            <div className="p-4 bg-white/80 rounded-xl">
+              <Globe className="w-8 h-8 text-cyan-600 mx-auto mb-2" />
+              <h4 className="mb-1">跨境网络</h4>
+              <p className="text-sm text-gray-600">稳定合规专线服务</p>
+            </div>
             <div className="p-4 bg-white/80 rounded-xl">
               <Palette className="w-8 h-8 text-blue-600 mx-auto mb-2" />
               <h4 className="mb-1">创意设计</h4>
