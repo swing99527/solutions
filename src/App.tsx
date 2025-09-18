@@ -4,7 +4,7 @@ import { Button } from "./components/ui/button";
 import { Badge } from "./components/ui/badge";
 import { ArrowRight, Palette, TrendingUp, Heart, Settings, Globe } from "lucide-react";
 import logoImage from "figma:asset/fe3c23c5ed29e662f22e6744f2cf4cdbae6fa88d.png";
-import faviconImage from "figma:asset/85b9ec66344b7da6c19fcbe63a53a5d01a0d16b9.png";
+import faviconImage from "./assets/icon.png";
 import SmartScheduling from "./components/SmartScheduling";
 import LingExpress from "./components/LingExpress";
 
